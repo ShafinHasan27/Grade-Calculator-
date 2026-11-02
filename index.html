@@ -1,0 +1,133 @@
+<div class="card">
+  <h2>Grade Calculator</h2>
+  <input id="marks" type="number" placeholder="Enter marks">
+<button onclick="showGrade()">Get Grade</button>
+<p id="result"></p>
+<ul id="list"></ul>
+<p id="avg"></p>
+<p id="top"></p>
+<input id="sName" placeholder="Name">
+<input id="sMarks" type="number" placeholder="Marks">
+<button onclick="addStudent()">Add</button>
+<p id="msg"></p>
+  </div>
+<style>
+  body { font-family: sans-serif; background: #f0f2f5; margin: 0; padding: 20px; }
+  .card { max-width: 400px; margin: 0 auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); text-align: center; }
+  input { width: 100%; box-sizing: border-box; padding: 10px; margin: 6px 0; font-size: 16px; }
+  button { padding: 10px 16px; font-size: 16px; background: #2563eb; color: white; border: none; border-radius: 6px; }
+  ul { list-style: none; padding: 0; text-align: left; }
+  li { padding: 8px 0; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+li button { background: red; padding: 6px 12px; }
+  #result { font-size: 24px; }
+  h2 { color: #1e3a8a; } 
+  button:hover { opacity: 0.8; }
+</style>
+
+<script>
+function getGrade(marks){
+  if(marks>=80){
+    return "A+"
+    }
+  else if(marks>=70){
+    return "A"
+    }
+  else if(marks>=60){
+    return "B"
+    }
+  else if(marks>=50){
+    return "C"
+    }
+  return "F";
+}
+function showGrade() {
+  const input = document.getElementById("marks").value;
+  const result = document.getElementById("result");
+if(input===""){
+  return result.textContent="Please enter marks";
+}
+  else if(input<0||input>100){
+    return result.textContent="Marks must be 0-100";
+  }
+  else {
+    const grade = getGrade(input);
+    result.textContent=` Grade: ${grade}`
+    if(grade === "F"){
+      result.style.color = "red";
+    } else {result.style.color = "green";}
+  }
+}
+  const students = [
+  { name: "Nirob", marks: 85} ,
+  { name: "Rahim", marks: 72 },
+  { name: "Karim", marks: 45 },
+  { name: "Sumi", marks: 60 },
+    { name: "Rina", marks: 90 }
+];
+function renderList() { let html="";
+  for(let i=0;i<students.length;i++){
+    html+=`<li>${students[i].name}: ${students[i].marks} - ${getGrade(students[i].marks)} <button onclick="removeStudent(${i})">X</button></li>`
+      }
+ document.getElementById("list").innerHTML=html;
+                        renderStats();
+                      }
+  renderList();
+  function addStudent() {
+  const name = document.getElementById("sName").value;
+  const marksInput= document.getElementById("sMarks").value;
+  const marks= Number(marksInput);
+  const msg= document.getElementById("msg");
+    let errors="";
+    if (name===""){
+      errors+="Please enter the name. ";}
+   if(marksInput===""||marks<0||marks>100){
+      errors+="Please enter the marks between 0-100";
+      }
+    if(errors!==""){
+     msg.textContent=errors;
+     return;
+    }
+    msg.textContent="";
+  students.push({ name: name, marks: marks });
+  renderList();
+  }
+  function removeStudent(index){
+    students.splice(index,1)
+    renderList();
+  }
+// Calculate average marks
+function getAverage() {
+  let total = 0;
+  for (let i = 0; i < students.length; i++) {
+    total += students[i].marks;
+  }
+  return total / students.length;
+}
+// Find top student
+function getTop() {
+  let top = students[0];
+  for (let i = 1; i < students.length; i++) {
+    if (students[i].marks > top.marks) {
+      top = students[i];
+    }
+  }
+  return top;
+}
+// Render statistics
+function renderStats() {
+  const avg = document.getElementById("avg");
+  const topEl = document.getElementById("top");
+
+  if (students.length === 0) {
+    avg.textContent = "No students";
+    topEl.textContent = "";
+    return;
+  }
+  avg.textContent = `Average: ${getAverage().toFixed(1)}`;
+  const top = getTop();
+  topEl.textContent = `Top student: ${top.name} ${top.marks}`;
+}
+
+
+  
+  </script>
